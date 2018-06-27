@@ -3,16 +3,17 @@ import assert from '../assert'
 
 
 export namespace Errors {
-  export class BlogError extends Error {
+  export class BallotError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to create blog')
+      super(msg || 'Unable to create ballot')
     }
   }
   
 }
 
 /**
- * @description Get salt as either dynamic salt or static salt.
+ * @description Delete a ballot.
+ * @param id Ballot's id.
  */
 export default async function(title: string, text: string, published: boolean, owner: number): Promise<string> {
   assert(owner > 0)
@@ -36,7 +37,7 @@ export default async function(title: string, text: string, published: boolean, o
         let _msg = JSON.parse(msg)
         return Promise.reject(_msg)
       } catch {
-        throw new Errors.BlogError
+        throw new Errors.BallotError
       }
     }
   })

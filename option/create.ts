@@ -3,29 +3,27 @@ import assert from '../assert'
 
 
 export namespace Errors {
-  export class BallotError extends Error {
+  export class OptionError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to create ballot')
+      super(msg || 'Unable to create option')
     }
   }
   
 }
 
 /**
- * @description Create a ballot.
- * @param title Ballot's title.
- * @param text Ballot's text.
- * @param published Ballot's publishment state.
- * @param owner Ballot's owner's id.
+ * @description Create an option.
+ * @param title Option's title.
+ * @param ballot Option's ballot.
+ * @param owner Option's owner's id.
  */
-export default async function(title: string, text: string, published: boolean, owner: number): Promise<string> {
-  assert(owner > 0)
+export default async function(title: string, ballot: number, owner: number): Promise<string> {
+  assert(owner > 0 && ballot > 0)
   let res
   return await fetch(url.CREATE, {
     body: JSON.stringify({
       title,
-      text,
-      published,
+      ballot,
       owner
     })
   })
@@ -40,7 +38,7 @@ export default async function(title: string, text: string, published: boolean, o
         let _msg = JSON.parse(msg)
         return Promise.reject(_msg)
       } catch {
-        throw new Errors.BallotError
+        throw new Errors.OptionError
       }
     }
   })

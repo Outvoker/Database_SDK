@@ -3,19 +3,19 @@ import assert from '../assert'
 
 
 export namespace Errors {
-  export class BlogError extends Error {
+  export class BallotError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to update blog')
+      super(msg || 'Unable to update ballot')
     }
   }
   
 }
 
 /**
- * @description Update a blog.
- * @param title Blog's title.
- * @param text Blog's text.
- * @param published Blog's publishment state.
+ * @description Update a ballot.
+ * @param title Ballot's title.
+ * @param text Ballot's text.
+ * @param published Ballot's publishment state.
  */
 export default async function(title?: string, text?: string, published?: boolean): Promise<string> {
   assert(title != null || text != null || published != null)
@@ -38,7 +38,7 @@ export default async function(title?: string, text?: string, published?: boolean
         let _msg = JSON.parse(msg)
         return Promise.reject(_msg)
       } catch {
-        throw new Errors.BlogError
+        throw new Errors.BallotError
       }
     }
   })
