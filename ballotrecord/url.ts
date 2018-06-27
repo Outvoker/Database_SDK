@@ -1,5 +1,5 @@
 export default {
-  CREATE: '/ballot/create',
-  UPDATE: '/ballot/update',
-  DELETE: '/ballot/delete'
+  CREATE: '/ballotrecord/create',
+  UPDATE: '/ballotrecord/update',
+  DELETE: '/ballotrecord/delete'
 }
