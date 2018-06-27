@@ -5,24 +5,22 @@ import assert from '../assert'
 export namespace Errors {
   export class BlogError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to create blog')
+      super(msg || 'Unable to delete blog')
     }
   }
   
 }
 
 /**
- * @description Get salt as either dynamic salt or static salt.
+ * @description Delete a blog.
+ * @param id Blog's id.
  */
-export default async function(title: string, text: string, published: boolean, owner: number): Promise<string> {
-  assert(owner > 0)
+export default async function(id: number): Promise<string> {
+  assert(id > 0)
   let res
-  return await fetch(url.CREATE, {
+  return await fetch(url.DELETE, {
     body: JSON.stringify({
-      title,
-      text,
-      published,
-      owner
+      id
     })
   })
   .then(_res => {
