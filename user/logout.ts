@@ -13,18 +13,21 @@ export namespace Errors {
 
 export default async function(): Promise<void> {
 
+  let res: Response
+
   // Logout
   await fetch(url.LOGOUT)
-  .then(res => {
-    if(res.status == 200) return
+  .then(_res => {
+    res = _res
     return res.text()
   })
   .then(msg => {
+    if(res.status == 200) return Promise.resolve()
     let _msg: Msg
     try {
       _msg = JSON.parse(msg)
     } catch {
-      throw new Errors.LogoutError('Cannot logout at this time')
+      return Promise.reject(new Errors.LogoutError('Cannot logout at this time'))
     }
     console.error((msg as Msg))
     switch(_msg.status) {

@@ -19,7 +19,7 @@ export namespace Errors {
  */
 export default async function(title?: string, text?: string, published?: boolean): Promise<string> {
   assert(title != null || text != null || published != null)
-  let res
+  let res: Response
   return await fetch(url.UPDATE, {
     body: JSON.stringify({
       title,
@@ -32,13 +32,13 @@ export default async function(title?: string, text?: string, published?: boolean
     return res.text()
   })
   .then(msg => {
-    if(res.status == 200) return msg
+    if(res.status == 200) return Promise.resolve(msg)
     else {
       try {
         let _msg = JSON.parse(msg)
         return Promise.reject(_msg)
       } catch {
-        throw new Errors.BlogError
+        return Promise.reject(new Errors.BlogError)
       }
     }
   })

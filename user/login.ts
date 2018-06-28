@@ -31,7 +31,7 @@ export namespace Errors {
 
 export default async function(username: string, password: string): Promise<void> {
   assert(username && password, 'Username and password are required')
-  let res
+  let res: Response
   // Get static salt
   let staticSalt: string
   // Get dynamic salt
@@ -53,12 +53,12 @@ export default async function(username: string, password: string): Promise<void>
     return res.text()
   })
   .then(msg => {
-    if(res.status == 200) return
+    if(res.status == 200) return Promise.resolve()
     let _msg: Msg
     try {
       _msg = JSON.parse(msg)
     } catch {
-      throw new Errors.LoginError('Cannot login at this time')
+      return Promise.reject(new Errors.LoginError('Cannot login at this time'))
     }
     console.error((msg as Msg))
     switch(_msg.status) {
