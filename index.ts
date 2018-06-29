@@ -1,22 +1,22 @@
-import user from './user'
-import blog from './blog'
-import album from './album'
-import photo from './photo'
-import ballot from './ballot'
-import ballotrecord from './ballotrecord'
-import option from './option'
-import notice from './notice'
+import User from './User'
+import Blog from './Blog'
+import Album from './Album'
+import Photo from './Photo'
+import Ballot from './Ballot'
+import Ballotrecord from './Ballotrecord'
+import Option from './Option'
+import Notice from './Notice'
 
 
 let sdk = {
-  user,
-  blog,
-  album,
-  photo,
-  ballot,
-  ballotrecord,
-  option,
-  notice
+  User,
+  Blog,
+  Album,
+  Photo,
+  Ballot,
+  Ballotrecord,
+  Option,
+  Notice,
 }
 
 declare var window: any
