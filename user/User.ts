@@ -1,7 +1,7 @@
 import Model from '../Model'
 import user from './index'
 
-interface User extends Model {
+export default interface User extends Model {
   username: string
   nickname: string
   isBlogger: boolean
@@ -9,7 +9,7 @@ interface User extends Model {
   loggedIn?: boolean
 }
 
-class User extends Model implements User {
+export default class User extends Model implements User {
   constructor(opt: User) {
     super(opt)
     this.username = opt.username
@@ -27,5 +27,3 @@ class User extends Model implements User {
     return user.logout()
   }
 }
-
-export default User
