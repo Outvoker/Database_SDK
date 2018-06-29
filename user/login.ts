@@ -1,35 +1,14 @@
 import assert from '../assert'
 import Msg from '../messages'
 import BaseErrors from '../BaseErrors'
+import Errors from './Errors'
 import url from './url'
 import salt from './salt'
 import { SHA512 as sha512 } from 'crypto-js'
 
 
-export namespace Errors {
-  export class SaltError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Unable to get salt')
-    }
-  }
-  export class LoginError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Login error')
-    }
-  }
-  export class AlreadyLoginError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Already logged in')
-    }
-  }
-  export class UsernameOrPasswordError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Username or password incorrect')
-    }
-  }
-}
-
-export default async function(username: string, password: string): Promise<void> {
+export default async function(opt: { username: string; password: string }): Promise<void> {
+  let { username, password } = opt
   assert(username && password, 'Username and password are required')
   let res: Response
   // Get static salt
@@ -37,12 +16,8 @@ export default async function(username: string, password: string): Promise<void>
   // Get dynamic salt
   let dynamicSalt: string
 
-  try {
-    staticSalt = await fetch(`${url.LOGIN}?username=${encodeURIComponent(username)}`).then(res => res.text())
-    dynamicSalt = await salt()
-  } catch {
-    throw new Errors.SaltError
-  }
+  staticSalt = await fetch(`${url.LOGIN}?username=${encodeURIComponent(username)}`).then(res => res.text())
+  dynamicSalt = await salt()
 
   // Calculate
   await fetch(`${url.LOGIN}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(

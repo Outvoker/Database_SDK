@@ -1,8 +1,11 @@
 import Model from '../Model'
 import url from './url'
+import Errors from './Errors'
 import salt from './salt'
+import signup from './signup'
 import login from './login'
 import logout from './logout'
+
 
 export default interface User extends Model {
   username: string
@@ -22,14 +25,12 @@ export default class User extends Model implements User {
     this.loggedIn = !!opt.loggedIn
   }
 
-  static login: (username: string, password: string) => Promise<void> = login
+  static signup: (opt: { username: string; nickname: string; password: string }) => Promise<void> = signup
+  static login: (opt: { username: string; password: string }) => Promise<void> = login
   static logout: () => Promise<void> = logout
   static salt: () => Promise<string> = salt
   static url = url
-
-  async login(password: string): Promise<void> {
-    return login(this.username, password)
-  }
+  static Errors = Errors
 
   async logout(): Promise<void> {
     return logout()
