@@ -32,7 +32,7 @@ export default class User extends Model implements User {
   static signup: (opt: { username: string; nickname: string; password: string }) => Promise<void> = signup
   static logout: () => Promise<void> = logout
   static salt: () => Promise<string> = salt
-  static state: () => Promise<User | null>
+  static state: () => Promise<User | null> = state
   static url = url
   static Errors = Errors
 
