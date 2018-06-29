@@ -7,11 +7,9 @@ import Errors from './Errors'
  * @throws {Errors.SaltError}
  */
 export default async function(): Promise<string> {
-  return await fetch(url.SALT, {
+  let res: Response = await fetch(url.SALT, {
     credentials: 'include'
   })
-  .then(res => {
-    if(res.status != 200) throw new Errors.SaltError
-    return res.text()
-  })
+  if(res.status != 200) throw new Errors.SaltError
+  return await res.text()
 }

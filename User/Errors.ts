@@ -20,6 +20,12 @@ namespace Errors {
     }
   }
 
+  export class LogoutError extends Error {
+    constructor(msg?: string) {
+      super(msg || 'Logout error')
+    }
+  }
+
   export class SignupError extends Error {
     constructor(msg?: string) {
       super(msg || 'Signup error')
@@ -28,6 +34,12 @@ namespace Errors {
   export class UsernameExistsError extends Error {
     constructor(msg?: string) {
       super(msg || 'Username already been taken')
+    }
+  }
+
+  export class StateError extends Error {
+    constructor(msg?: string) {
+      super(msg || 'Unable to get user\'s state')
     }
   }
 }

@@ -3,5 +3,6 @@ export default {
   LOGIN: '/user/login',
   LOGOUT: '/user/logout',
   RESET: '/user/reset',
-  SIGNUP: '/user/signup'
+  SIGNUP: '/user/signup',
+  STATE: '/user/state'
 }
