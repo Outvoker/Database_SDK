@@ -15,13 +15,17 @@ export namespace Errors {
  * @description Update a blog.
  * @param title Blog's title.
  * @param text Blog's text.
+ * @param id Blog's id.
  * @param published Blog's publishment state.
  */
-export default async function(title?: string, text?: string, published?: boolean): Promise<string> {
+export default async function(id: number, title?: string, text?: string, published?: boolean): Promise<string> {
   assert(title != null || text != null || published != null)
   let res: Response
   return await fetch(url.UPDATE, {
+    method: 'POST',
+    credentials: 'include',
     body: JSON.stringify({
+      id,
       title,
       text,
       published

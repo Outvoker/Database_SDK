@@ -47,7 +47,9 @@ export default async function(username: string, password: string): Promise<void>
   // Calculate
   await fetch(`${url.LOGIN}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(
     sha512(dynamicSalt + sha512(staticSalt + password).toString()).toString()  // Dynamic-salted static-salted password
-  )}`)
+  )}`, {
+    credentials: 'include'
+  })
   .then(_res => {
     res = _res
     return res.text()

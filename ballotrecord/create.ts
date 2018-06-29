@@ -21,6 +21,8 @@ export default async function(ballot: number, option: number, owner: number): Pr
   assert(owner > 0)
   let res: Response
   return await fetch(url.CREATE, {
+    method: 'POST',
+    credentials: 'include',
     body: JSON.stringify({
       ballot,
       option,

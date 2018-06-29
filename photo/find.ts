@@ -5,28 +5,30 @@ import assert from '../assert'
 export namespace Errors {
   export class PhotoError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to create photo')
+      super(msg || 'Unable to find photo')
     }
   }
   
 }
 
 /**
- * @description Create a photo.
- * @param path Photo's path.
- * @param album Photo's album.
+ * @description Find a photo.
+ * @param id Photo's id.
  * @param owner Photo's owner's id.
+ * @param fromDate Photo's owner's id.
+ * @param toDate Photo's owner's id.
  */
-export default async function(path: string, album: string, owner: number): Promise<string> {
-  assert(owner > 0)
+export default async function(id?: number, owner?: number, fromDate?: number, toDate?: number): Promise<string> {
+  assert((!fromDate && !toDate) || (fromDate && toDate))
   let res: Response
-  return await fetch(url.CREATE, {
+  return await fetch(url.FIND, {
     method: 'POST',
     credentials: 'include',
     body: JSON.stringify({
-      path,
-      album,
-      owner
+      id,
+      owner,
+      fromDate,
+      toDate
     })
   })
   .then(_res => {

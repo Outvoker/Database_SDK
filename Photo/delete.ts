@@ -19,6 +19,8 @@ export default async function(id: number): Promise<string> {
   assert(id > 0)
   let res: Response
   return await fetch(url.DELETE, {
+    method: 'POST',
+    credentials: 'include',
     body: JSON.stringify({
       id
     })

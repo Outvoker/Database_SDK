@@ -3,28 +3,30 @@ import assert from '../assert'
 
 
 export namespace Errors {
-  export class BallotError extends Error {
+  export class NoticeError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to create ballot')
+      super(msg || 'Unable to find notice')
     }
   }
   
 }
 
 /**
- * @description Delete a ballot.
- * @param id Ballot's id.
+ * @description Find a notice.
+ * @param id Notice's id.
+ * @param title Notice's title.
+ * @param text Notice's text.
+ * @param owner Notice's owner's id.
  */
-export default async function(title: string, text: string, published: boolean, owner: number): Promise<string> {
-  assert(owner > 0)
+export default async function(id?: number, title?: string, text?: string, owner?: number): Promise<string> {
   let res: Response
-  return await fetch(url.CREATE, {
+  return await fetch(url.FIND, {
     method: 'POST',
     credentials: 'include',
     body: JSON.stringify({
+      id,
       title,
       text,
-      published,
       owner
     })
   })
@@ -39,7 +41,7 @@ export default async function(title: string, text: string, published: boolean, o
         let _msg = JSON.parse(msg)
         return Promise.reject(_msg)
       } catch {
-        return Promise.reject(new Errors.BallotError)
+        return Promise.reject(new Errors.NoticeError)
       }
     }
   })

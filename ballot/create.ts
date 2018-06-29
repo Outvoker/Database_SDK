@@ -22,6 +22,8 @@ export default async function(title: string, text: string, published: boolean, o
   assert(owner > 0)
   let res: Response
   return await fetch(url.CREATE, {
+    method: 'POST',
+    credentials: 'include',
     body: JSON.stringify({
       title,
       text,

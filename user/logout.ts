@@ -16,7 +16,9 @@ export default async function(): Promise<void> {
   let res: Response
 
   // Logout
-  await fetch(url.LOGOUT)
+  await fetch(url.LOGOUT, {
+    credentials: 'include'
+  })
   .then(_res => {
     res = _res
     return res.text()

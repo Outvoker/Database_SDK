@@ -15,13 +15,17 @@ export namespace Errors {
  * @description Update a ballot.
  * @param title Ballot's title.
  * @param text Ballot's text.
+ * @param id Ballot's id.
  * @param published Ballot's publishment state.
  */
-export default async function(title?: string, text?: string, published?: boolean): Promise<string> {
+export default async function(id: number, title?: string, text?: string, published?: boolean): Promise<string> {
   assert(title != null || text != null || published != null)
   let res: Response
   return await fetch(url.UPDATE, {
+    method: 'POST',
+    credentials: 'include',
     body: JSON.stringify({
+      id,
       title,
       text,
       published

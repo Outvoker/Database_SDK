@@ -1,5 +1,6 @@
 export default {
   CREATE: '/photo/create',
   UPDATE: '/photo/update',
-  DELETE: '/photo/delete'
+  DELETE: '/photo/delete',
+  FIND: '/photo/find'
 }

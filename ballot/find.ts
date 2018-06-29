@@ -5,26 +5,29 @@ import assert from '../assert'
 export namespace Errors {
   export class BallotError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to create ballot')
+      super(msg || 'Unable to find ballot')
     }
   }
   
 }
 
 /**
- * @description Delete a ballot.
- * @param id Ballot's id.
+ * @description Create a ballot.
+ * @param id Ballot's id
+ * @param title Ballot's title.
+ * @param text Ballot's text.
+ * @param published Ballot's publishment state.
+ * @param owner Ballot's owner's id.
  */
-export default async function(title: string, text: string, published: boolean, owner: number): Promise<string> {
-  assert(owner > 0)
+export default async function(id?: number, title?: string, text?: string, owner?: number): Promise<string> {
   let res: Response
-  return await fetch(url.CREATE, {
+  return await fetch(url.FIND, {
     method: 'POST',
     credentials: 'include',
     body: JSON.stringify({
+      id,
       title,
       text,
-      published,
       owner
     })
   })

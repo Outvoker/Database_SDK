@@ -14,13 +14,17 @@ export namespace Errors {
 /**
  * @description Update a notice.
  * @param title Notice's title.
+ * @param id Notice's id.
  * @param text Notice's text.
  */
-export default async function(title?: string, text?: string): Promise<string> {
+export default async function(id: number, title?: string, text?: string): Promise<string> {
   assert(title != null || text != null)
   let res: Response
   return await fetch(url.UPDATE, {
+    method: 'POST',
+    credentials: 'include',
     body: JSON.stringify({
+      id,
       title,
       text
     })
