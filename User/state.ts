@@ -14,10 +14,11 @@ export default async function(): Promise<User | null> {
   if(res.status != 200) throw new BaseErrors.ServerError
 
   let msg: string = await res.text()
-  if(msg == '0') return null
   let user: User
   try {
     user = JSON.parse(msg)
+    if(user.id) return user
+    else return null
   } catch {
     throw new Errors.StateError
   }
