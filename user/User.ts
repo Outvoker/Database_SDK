@@ -15,17 +15,24 @@ export default interface User extends Model {
   isBlogger: boolean
   isAdmin: boolean
   loggedIn?: boolean
+  avatar?: string
 }
 
 export default class User extends Model implements User {
 
-  constructor(opt: User) {
+  constructor(opt: {
+    nickname: string
+    isBlogger: boolean
+    isAdmin: boolean
+    loggedIn?: boolean
+    avatar?: string
+  } & Model) {
     super(opt)
-    this.username = opt.username
     this.nickname = opt.nickname
     this.isBlogger = opt.isBlogger
     this.isAdmin = opt.isAdmin
     this.loggedIn = !!opt.loggedIn
+    this.avatar = opt.avatar
   }
 
   static signup: (opt: { username: string; nickname: string; password: string }) => Promise<void> = signup
