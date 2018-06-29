@@ -10,7 +10,9 @@ import url from './url'
  * @description Get user's state. Resolve null if not logged in.
  */
 export default async function(): Promise<User | null> {
-  let res: Response = await fetch(url.STATE)
+  let res: Response = await fetch(url.STATE, {
+    credentials: 'include'
+  })
   if(res.status != 200) throw new BaseErrors.ServerError
 
   let msg: string = await res.text()

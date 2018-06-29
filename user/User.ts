@@ -18,7 +18,6 @@ export default interface User extends Model {
 }
 
 export default class User extends Model implements User {
-  LoggedIn: boolean = false
 
   constructor(opt: User) {
     super(opt)
@@ -43,9 +42,10 @@ export default class User extends Model implements User {
   static async login(opt: { username: string; password: string }): Promise<User> {
     let uid = await login(opt)
     let user: User | null = await state()
-    assert(user)
+    assert(user, new Errors.LoginError)
     user = new User(user as User)
-    user.LoggedIn = true
+    user.loggedIn = true
+    user.username = opt.username
     return user
   }
 
@@ -54,6 +54,7 @@ export default class User extends Model implements User {
    */
   async logout(): Promise<void> {
     assert(this.loggedIn, new Errors.AlreadyLoginError)
-    logout()
+    await logout()
+    this.loggedIn = false
   }
 }

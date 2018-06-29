@@ -31,7 +31,7 @@ export default async function(opt: { username: string; password: string }): Prom
   })
 
   let msg: string = await res.text()
-  console.error(msg)
+  console.info(msg)
   let _msg: Msg & { id: number }
   try {
     _msg = JSON.parse(msg)

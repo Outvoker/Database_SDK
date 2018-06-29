@@ -12,13 +12,12 @@ import { SHA512 as sha512 } from 'crypto-js'
  * @param opt User's information.
  */
 export default async function(opt: { username: string; nickname: string; password: string }): Promise<void> {
-  let { username, nickname, password } = opt
-  assert(username && nickname && password)
+  assert(opt.username && opt.nickname && opt.password)
 
   let staticSalt: string = await salt()  // Gnerate static salt
 
   // Calculate
-  password = sha512(staticSalt + password).toString()
+  opt.password = sha512(staticSalt + opt.password).toString()
   
   let res: Response = await fetch(url.SIGNUP, {
     credentials: 'include',
