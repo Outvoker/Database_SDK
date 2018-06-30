@@ -5,7 +5,7 @@ import Errors from './Errors'
 import assert from '../assert'
 
 
-interface NoticeFindArg {
+export interface CommentFindArg {
   id?: number
   blog?: number
   text?: string
@@ -23,7 +23,7 @@ interface NoticeFindArg {
  * @param text Notice's text.
  * @param owner Notice's owner's id.
  */
-export default async function(opt: NoticeFindArg): Promise<Comment[]> {
+export default async function(opt: CommentFindArg): Promise<Comment[]> {
   let res: Response = await fetch(url.FIND + '?' + encodeSearchParams(opt))
   let msg: string = await res.text()
   assert(res.status == 200, new Errors.CommentError(msg))

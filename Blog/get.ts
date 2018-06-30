@@ -2,6 +2,7 @@ import url from './url'
 import Errors from './Errors'
 import Blog from './Blog'
 import assert from '../assert'
+import Comment from '../Comment'
 
 
 /**
@@ -26,5 +27,12 @@ export default async function(id: number): Promise<Blog> {
     throw new Errors.BlogError('Unable to get blog')
   }
   assert(blog.id && blog.title, new Errors.BlogError('Unable to get blog'))
+  let comments: Comment[] = []
+  try {
+    comments = await Comment.find({
+      blog: blog.id
+    })
+  } catch {}
+  blog.comments = comments.map(comment => new Comment(comment)) || []
   return new Blog(blog)
 }

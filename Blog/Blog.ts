@@ -18,6 +18,7 @@ export default interface Blog extends Model {
   text: string
   published: boolean
   owner: User
+  comments?: Comment[]
 }
 
 export default class Blog extends Model implements Blog {
@@ -26,12 +27,14 @@ export default class Blog extends Model implements Blog {
     text: string
     published: boolean
     owner: User
+    comments?: Comment[]
   } & Model) {
     super(opt)
     this.title = opt.title
     this.text = opt.text
     this.published = opt.published
     this.owner = opt.owner instanceof User ? opt.owner : new User(opt.owner)
+    this.comments = (opt.comments || []).map(comment => (comment instanceof Comment) ? comment : new Comment(comment))
   }
 
   static delete: (id: number) => Promise<string> = del
