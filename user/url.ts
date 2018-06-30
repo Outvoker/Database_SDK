@@ -4,5 +4,6 @@ export default {
   LOGOUT: '/user/logout',
   RESET: '/user/reset',
   SIGNUP: '/user/signup',
-  STATE: '/user/state'
+  STATE: '/user/state',
+  FIND: '/user'
 }

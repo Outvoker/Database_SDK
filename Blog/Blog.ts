@@ -6,6 +6,7 @@ import del from './delete'
 import update from './update'
 import find from './find'
 import get from './get'
+import count from './count'
 import { BlogFindArg } from './find'
 import Errors from './Errors'
 import User from '../User'
@@ -37,6 +38,7 @@ export default class Blog extends Model implements Blog {
   static update: (opt: { id: number; title?: string; text?: string; published?: boolean }) => Promise<string> = update
   static find: (opt: BlogFindArg) => Promise<Blog[]> = find
   static get: (id: number) => Promise<Blog> = get
+  static count: (id?: number) => Promise<number> = count
   static url = url
   static Errors = Errors
 
@@ -45,13 +47,14 @@ export default class Blog extends Model implements Blog {
    * @param pageNum Page number.
    * @param pageSize Blogs per page.
    */
-  static async hotBlogs(pageNum: number, pageSize: number): Promise<Blog[]> {
+  static async getHotBlogs(pageNum: number, pageSize: number, ascend: boolean = false): Promise<[Blog[], number]> {
     assert(pageNum && pageSize)
-    return await find({
+    return [await find({
+      omit: 'text',
       limit: pageSize,
       skip: (pageNum - 1) * pageSize,
-      sort: 'updatedAt DESC'
-    })
+      sort: 'updatedAt ' + (ascend ? 'ASC' : 'DESC')
+    }), await count()]
   }
 
   /**

@@ -10,6 +10,7 @@ export interface BlogFindArg {
   title?: string
   text?: string
   owner?: number
+  omit?: string
   limit?: number
   skip?: number
   sort?: string

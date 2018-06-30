@@ -7,7 +7,9 @@ import signup from './signup'
 import login from './login'
 import logout from './logout'
 import state from './state'
+import get from './get'
 import Blog from '../Blog'
+import generateAvatar from '../../generateAvatar'
 
 
 export default interface User extends Model {
@@ -27,19 +29,41 @@ export default class User extends Model implements User {
     isAdmin: boolean
     loggedIn?: boolean
     avatar?: string
-  } & Model) {
+  } & Model, globalInstance: boolean = false) {
     super(opt)
     this.nickname = opt.nickname
     this.isBlogger = opt.isBlogger
     this.isAdmin = opt.isAdmin
     this.loggedIn = !!opt.loggedIn
-    this.avatar = opt.avatar
+    this.avatar = opt.avatar && opt.avatar != 'default' ? opt.avatar : generateAvatar(opt.nickname, opt.id)
+    if(globalInstance) {
+      try {
+        // Object.defineProperty(window, 'user', {
+        //   value: this,
+        //   writable: true,
+        //   configurable: true,
+        //   enumerable: true
+        // })
+        (window as any).user = this
+      } catch {
+        try {
+          // Object.defineProperty(global, 'user', {
+          //   value: this,
+          //   writable: true,
+          //   configurable: true,
+          //   enumerable: true
+          // })
+          (global as any).user = this
+        } catch {}
+      }
+    }
   }
 
   static signup: (opt: { username: string; nickname: string; password: string }) => Promise<void> = signup
   static logout: () => Promise<void> = logout
   static salt: () => Promise<string> = salt
   static state: () => Promise<User | null> = state
+  static get: (id: number) => Promise<User> = get
   static url = url
   static Errors = Errors
 
@@ -47,11 +71,11 @@ export default class User extends Model implements User {
    * @description Login. Resolve the user's ID.
    * @param opt User's username and password.
    */
-  static async login(opt: { username: string; password: string }): Promise<User> {
+  static async login(opt: { username: string; password: string }, globalInstance: boolean = false): Promise<User> {
     let uid = await login(opt)
     let user: User | null = await state()
     assert(user, new Errors.LoginError)
-    user = new User(user as User)
+    user = new User(user as User, globalInstance)
     user.loggedIn = true
     user.username = opt.username
     return user
@@ -69,13 +93,22 @@ export default class User extends Model implements User {
   /**
    * @description Get blogs written by this user.
    */
-  async getBlogs(pageNum: number, pageSize: number): Promise<Blog[]> {
+  async getBlogs(pageNum: number, pageSize: number, ascend: boolean = false): Promise<[Blog[], number]> {
     assert(pageSize && pageNum)
-    return await Blog.find({
+    return [await Blog.find({
       owner: this.id,
-      sort: 'createdAt DESC',
+      omit: 'text',
+      sort: 'createdAt ' + (ascend ? 'ASC' : 'DESC'),
       limit: pageSize,
       skip: (pageNum - 1) * pageSize
+    }), await Blog.count(this.id)]
+  }
+
+  async createBlog(opt: { title: string; text: string }): Promise<void> {
+    assert(opt.title && opt.text)
+    await Blog.create({
+      ...opt,
+      owner: this
     })
   }
 }

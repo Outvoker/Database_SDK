@@ -58,6 +58,21 @@ namespace Errors {
       this.message = msg || 'Unable to get user\'s state'
     }
   }
+
+  export class UserNotFoundError extends Error {
+    constructor(msg?: string) {
+      super()
+      this.stack = (new Error).stack
+      this.message = msg || 'User not found'
+    }
+  }
+  export class UserError extends Error {
+    constructor(msg?: string) {
+      super()
+      this.stack = (new Error).stack
+      this.message = msg || 'User error'
+    }
+  }
 }
 
 export default Errors
