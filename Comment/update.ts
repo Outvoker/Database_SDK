@@ -1,45 +1,24 @@
 import url from './url'
 import assert from '../assert'
+import Errors from './Errors'
 
-
-export namespace Errors {
-  export class NoticeError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Unable to update notice')
-    }
-  }
-  
-}
 
 /**
  * @description Update a notice.
  * @param id Notice's id.
  * @param text Notice's text.
  */
-export default async function(id: number, text?: string): Promise<string> {
-  let res: Response
-  return await fetch(url.UPDATE, {
+export default async function(opt: { id: number; text?: string }): Promise<string> {
+  let res: Response = await fetch(url.UPDATE, {
     method: 'POST',
     credentials: 'include',
-    body: JSON.stringify({
-      id,
-      text
-    })
+    body: JSON.stringify(opt)
   })
-  .then(_res => {
-    res = _res
-    return res.text()
-  })
-  .then(msg => {
-    if(res.status == 200) return Promise.resolve(msg)
-    else {
-      try {
-        let _msg = JSON.parse(msg)
-        return Promise.reject(_msg)
-      } catch {
-        return Promise.reject(new Errors.NoticeError)
-      }
-    }
-  })
-
+  switch(res.status) {
+    case 200: break
+    case 403: throw new Errors.CommentError('Please login first')
+    default: throw new Errors.CommentError('Unable to create comment')
+  }
+  let msg: string = await res.text()
+  return msg
 }

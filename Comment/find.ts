@@ -1,24 +1,19 @@
 import url from './url'
 import encodeSearchParams from '../encodeSearchParams'
+import Comment from './Comment'
+import Errors from './Errors'
+import assert from '../assert'
 
-
-export namespace Errors {
-  export class NoticeError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Unable to find comment')
-    }
-  }
-  
-}
 
 interface NoticeFindArg {
-  id?: number,
-  blog?: number,
-  text?: string,
-  owner?: number,
-  limit?: number,
-  skip?: number,
+  id?: number
+  blog?: number
+  text?: string
+  owner?: number
+  limit?: number
+  skip?: number
   sort?: string
+  omit?: string
 }
 
 /**
@@ -28,23 +23,16 @@ interface NoticeFindArg {
  * @param text Notice's text.
  * @param owner Notice's owner's id.
  */
-export default async function(opt: NoticeFindArg): Promise<string> {
-  let res: Response
-  return await fetch(url.FIND + '?' + encodeSearchParams(opt))
-  .then(_res => {
-    res = _res
-    return res.text()
-  })
-  .then(msg => {
-    if(res.status == 200) return Promise.resolve(msg)
-    else {
-      try {
-        let _msg = JSON.parse(msg)
-        return Promise.reject(_msg)
-      } catch {
-        return Promise.reject(new Errors.NoticeError)
-      }
-    }
-  })
-
+export default async function(opt: NoticeFindArg): Promise<Comment[]> {
+  let res: Response = await fetch(url.FIND + '?' + encodeSearchParams(opt))
+  let msg: string = await res.text()
+  assert(res.status == 200, new Errors.CommentError(msg))
+  let comments: Comment[]
+  try {
+    comments = JSON.parse(msg)
+  } catch {
+    throw new Errors.CommentError(msg)
+  }
+  assert(comments instanceof Array, new Errors.CommentError('Unable to find comment'))
+  return comments.map(comment => new Comment(comment))
 }

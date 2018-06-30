@@ -2,7 +2,7 @@ import url from './url'
 import assert from '../assert'
 import Errors from './Errors'
 import Msg from '../messages'
-import BaseErrors from '../build/BaseErrors'
+import BaseErrors from '../BaseErrors'
 
 
 
