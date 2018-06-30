@@ -1,5 +1,5 @@
 import url from './url'
-import assert from '../assert'
+import encodeSearchParams from '../encodeSearchParams'
 
 
 export namespace Errors {
@@ -11,26 +11,27 @@ export namespace Errors {
   
 }
 
+interface BallotFindArg {
+  id?: number,
+  title?: string,
+  text?: string,
+  owner?: number,
+  limit?: number,
+  skip?: number,
+  sort?: string
+}
+
 /**
- * @description Create a ballot.
+ * @description Find a ballot.
  * @param id Ballot's id
  * @param title Ballot's title.
  * @param text Ballot's text.
  * @param published Ballot's publishment state.
  * @param owner Ballot's owner's id.
  */
-export default async function(id?: number, title?: string, text?: string, owner?: number): Promise<string> {
+export default async function(opt: BallotFindArg): Promise<string> {
   let res: Response
-  return await fetch(url.FIND, {
-    method: 'POST',
-    credentials: 'include',
-    body: JSON.stringify({
-      id,
-      title,
-      text,
-      owner
-    })
-  })
+  return await fetch(url.FIND + '?' + encodeSearchParams(opt))
   .then(_res => {
     res = _res
     return res.text()

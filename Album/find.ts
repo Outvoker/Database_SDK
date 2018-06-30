@@ -1,35 +1,35 @@
 import url from './url'
-import assert from '../assert'
 import encodeSearchParams from '../encodeSearchParams'
 
 
 export namespace Errors {
-  export class PhotoError extends Error {
+  export class AlbumError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to find photo')
+      super(msg || 'Unable to find album')
     }
   }
   
 }
 
-interface PhotoFindArg {
+interface AlbumFindArg {
   id?: number,
+  title?: string,
+  description?: string,
   owner?: number,
-  fromDate?: number,
-  toDate?: number,
   limit?: number,
   skip?: number,
   sort?: string
 }
 
 /**
- * @description Find a photo.
- * @param id Photo's id.
- * @param owner Photo's owner's id.
- * @param fromDate Photo's owner's id.
- * @param toDate Photo's owner's id.
+ * @description Find an album.
+ * @param id Album's id
+ * @param title Album's title.
+ * @param text Album's text.
+ * @param published Album's publishment state.
+ * @param owner Album's owner's id.
  */
-export default async function(opt: PhotoFindArg): Promise<string> {
+export default async function(opt: AlbumFindArg): Promise<string> {
   let res: Response
   return await fetch(url.FIND + '?' + encodeSearchParams(opt))
   .then(_res => {
@@ -43,7 +43,7 @@ export default async function(opt: PhotoFindArg): Promise<string> {
         let _msg = JSON.parse(msg)
         return Promise.reject(_msg)
       } catch {
-        return Promise.reject(new Errors.PhotoError)
+        return Promise.reject(new Errors.AlbumError)
       }
     }
   })

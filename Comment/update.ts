@@ -1,36 +1,31 @@
 import url from './url'
-import encodeSearchParams from '../encodeSearchParams'
+import assert from '../assert'
 
 
 export namespace Errors {
   export class NoticeError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to find notice')
+      super(msg || 'Unable to update notice')
     }
   }
   
 }
 
-interface NoticeFindArg {
-  id?: number,
-  title?: string,
-  text?: string,
-  owner?: number,
-  limit?: number,
-  skip?: number,
-  sort?: string
-}
-
 /**
- * @description Find a notice.
+ * @description Update a notice.
  * @param id Notice's id.
- * @param title Notice's title.
  * @param text Notice's text.
- * @param owner Notice's owner's id.
  */
-export default async function(opt: NoticeFindArg): Promise<string> {
+export default async function(id: number, text?: string): Promise<string> {
   let res: Response
-  return await fetch(url.FIND + '?' + encodeSearchParams(opt))
+  return await fetch(url.UPDATE, {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify({
+      id,
+      text
+    })
+  })
   .then(_res => {
     res = _res
     return res.text()
