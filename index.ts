@@ -6,6 +6,7 @@ import Ballot from './Ballot'
 import BallotRecord from './BallotRecord'
 import Option from './Option'
 import Notice from './Notice'
+import Comment from './Comment'
 
 
 let sdk = {
@@ -17,6 +18,7 @@ let sdk = {
   BallotRecord,
   Option,
   Notice,
+  Comment
 }
 
 declare var window: any

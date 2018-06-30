@@ -1,35 +1,36 @@
 import url from './url'
-import assert from '../assert'
 import encodeSearchParams from '../encodeSearchParams'
 
 
 export namespace Errors {
-  export class PhotoError extends Error {
+  export class OptionError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to find photo')
+      super(msg || 'Unable to find option')
     }
   }
   
 }
 
-interface PhotoFindArg {
+interface OptionFindArg {
   id?: number,
+  ballot?: number,
+  title?: string,
   owner?: number,
-  fromDate?: number,
-  toDate?: number,
   limit?: number,
   skip?: number,
   sort?: string
 }
-
 /**
- * @description Find a photo.
- * @param id Photo's id.
- * @param owner Photo's owner's id.
- * @param fromDate Photo's owner's id.
- * @param toDate Photo's owner's id.
+ * @description Find a option.
+ * @param id Option's id.
+ * @param title Option's title.
+ * @param ballot Option's ballot.
+ * @param owner Option's owner's id.
+ * @param limit Option's limit.
+ * @param skip Option's skip.
+ * @param sort Option's sort.
  */
-export default async function(opt: PhotoFindArg): Promise<string> {
+export default async function(opt: OptionFindArg): Promise<string> {
   let res: Response
   return await fetch(url.FIND + '?' + encodeSearchParams(opt))
   .then(_res => {
@@ -43,7 +44,7 @@ export default async function(opt: PhotoFindArg): Promise<string> {
         let _msg = JSON.parse(msg)
         return Promise.reject(_msg)
       } catch {
-        return Promise.reject(new Errors.PhotoError)
+        return Promise.reject(new Errors.OptionError)
       }
     }
   })
