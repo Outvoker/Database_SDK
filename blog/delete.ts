@@ -1,15 +1,7 @@
 import url from './url'
 import assert from '../assert'
+import Errors from './Errors'
 
-
-export namespace Errors {
-  export class BlogError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Unable to delete blog')
-    }
-  }
-  
-}
 
 /**
  * @description Delete a blog.
@@ -17,28 +9,14 @@ export namespace Errors {
  */
 export default async function(id: number): Promise<string> {
   assert(id > 0)
-  let res: Response
-  return await fetch(url.DELETE, {
+  let res: Response = await fetch(url.DELETE, {
     method: 'POST',
     credentials: 'include',
     body: JSON.stringify({
       id
     })
   })
-  .then(_res => {
-    res = _res
-    return res.text()
-  })
-  .then(msg => {
-    if(res.status == 200) return Promise.resolve(msg)
-    else {
-      try {
-        let _msg = JSON.parse(msg)
-        return Promise.reject(_msg)
-      } catch {
-        return Promise.reject(new Errors.BlogError)
-      }
-    }
-  })
-
+  let msg: string = await res.text()
+  if(res.status == 200) return msg
+  else throw new Errors.BlogError('Unable to delete blog')
 }

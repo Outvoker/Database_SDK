@@ -7,6 +7,7 @@ import signup from './signup'
 import login from './login'
 import logout from './logout'
 import state from './state'
+import Blog from '../Blog'
 
 
 export default interface User extends Model {
@@ -63,5 +64,18 @@ export default class User extends Model implements User {
     assert(this.loggedIn, new Errors.AlreadyLoginError)
     await logout()
     this.loggedIn = false
+  }
+
+  /**
+   * @description Get blogs written by this user.
+   */
+  async getBlogs(pageNum: number, pageSize: number): Promise<Blog[]> {
+    assert(pageSize && pageNum)
+    return await Blog.find({
+      owner: this.id,
+      sort: 'createdAt DESC',
+      limit: pageSize,
+      skip: (pageNum - 1) * pageSize
+    })
   }
 }

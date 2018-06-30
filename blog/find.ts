@@ -1,25 +1,20 @@
 import url from './url'
+import Errors from './Errors'
+import Blog from './Blog'
 import encodeSearchParams from '../encodeSearchParams'
+import assert from '../assert'
 
 
-export namespace Errors {
-  export class BlogError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Unable to find blog')
-    }
-  }
-  
-}
-
-interface BlogFindArg {
-  id?: number,
-  title?: string,
-  text?: string,
-  owner?: number,
-  limit?: number,
-  skip?: number,
+export interface BlogFindArg {
+  id?: number
+  title?: string
+  text?: string
+  owner?: number
+  limit?: number
+  skip?: number
   sort?: string
 }
+
 /**
  * @description Find a blog.
  * @param id Blog's id.
@@ -30,23 +25,18 @@ interface BlogFindArg {
  * @param skip Blog's skip.
  * @param sort Blog's sort.
  */
-export default async function(opt: BlogFindArg): Promise<string> {
-  let res: Response
-  return await fetch(url.FIND + '?' + encodeSearchParams(opt))
-  .then(_res => {
-    res = _res
-    return res.text()
+export default async function(opt: BlogFindArg): Promise<Blog[]> {
+  let res: Response = await fetch(url.FIND + '?' + encodeSearchParams(opt), {
+    credentials: 'include'
   })
-  .then(msg => {
-    if(res.status == 200) return Promise.resolve(msg)
-    else {
-      try {
-        let _msg = JSON.parse(msg)
-        return Promise.reject(_msg)
-      } catch {
-        return Promise.reject(new Errors.BlogError)
-      }
-    }
-  })
-
+  let msg: string = await res.text()
+  assert(res.status == 200, new Errors.BlogError(msg))
+  let blogs: Blog[]
+  try {
+    blogs = JSON.parse(msg)
+  } catch {
+    throw new Errors.BlogError(msg)
+  }
+  assert(blogs instanceof Array, new Errors.BlogError('Unable to find blog'))
+  return blogs.map(blog => new Blog(blog))
 }

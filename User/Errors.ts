@@ -1,28 +1,28 @@
 namespace Errors {
   export class SaltError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to get salt')
+      super()
       this.stack = (new Error).stack
       this.message = msg || 'Unable to get salt'
     }
   }
   export class LoginError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Login error')
+      super()
       this.stack = (new Error).stack
       this.message = msg || 'Login error'
     }
   }
   export class AlreadyLoginError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Already logged in')
+      super()
       this.stack = (new Error).stack
       this.message = msg || 'Already logged in'
     }
   }
   export class UsernameOrPasswordError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Username or password incorrect')
+      super()
       this.stack = (new Error).stack
       this.message = msg || 'Username or password incorrect'
     }
@@ -30,7 +30,7 @@ namespace Errors {
 
   export class LogoutError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Logout error')
+      super()
       this.stack = (new Error).stack
       this.message = msg || 'Logout error'
     }
@@ -38,14 +38,14 @@ namespace Errors {
 
   export class SignupError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Signup error')
+      super()
       this.stack = (new Error).stack
       this.message = msg || 'Signup error'
     }
   }
   export class UsernameExistsError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Username already been taken')
+      super()
       this.stack = (new Error).stack
       this.message = msg || 'Username already been taken'
     }
@@ -53,7 +53,7 @@ namespace Errors {
 
   export class StateError extends Error {
     constructor(msg?: string) {
-      super(msg || 'Unable to get user\'s state')
+      super()
       this.stack = (new Error).stack
       this.message = msg || 'Unable to get user\'s state'
     }
