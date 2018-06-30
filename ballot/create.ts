@@ -1,15 +1,9 @@
 import url from './url'
 import assert from '../assert'
+import Errors from './Errors'
+import Msg from '../messages'
+import BaseErrors from '../BaseErrors'
 
-
-export namespace Errors {
-  export class BallotError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Unable to create ballot')
-    }
-  }
-  
-}
 
 /**
  * @description Create a ballot.
@@ -18,33 +12,26 @@ export namespace Errors {
  * @param published Ballot's publishment state.
  * @param owner Ballot's owner's id.
  */
-export default async function(title: string, text: string, published: boolean, owner: number): Promise<string> {
-  assert(owner > 0)
-  let res: Response
-  return await fetch(url.CREATE, {
+export default async function(opt: { title: string; text: string; published: boolean; owner: number }): Promise<string> {
+  assert(opt.owner > 0)
+  let res: Response = await fetch(url.CREATE, {
     method: 'POST',
     credentials: 'include',
-    body: JSON.stringify({
-      title,
-      text,
-      published,
-      owner
-    })
+    body: JSON.stringify(opt)
   })
-  .then(_res => {
-    res = _res
-    return res.text()
-  })
-  .then(msg => {
-    if(res.status == 200) return Promise.resolve(msg)
-    else {
-      try {
-        let _msg = JSON.parse(msg)
-        return Promise.reject(_msg)
-      } catch {
-        return Promise.reject(new Errors.BallotError)
-      }
+  let msg: string = await res.text()
+  if(res.status == 200) return
+  else {
+    let _msg: Msg
+    try {
+      _msg = JSON.parse(msg)
+    } catch {
+      throw new Errors.BallotError
     }
-  })
-
+    assert(_msg.status, new BaseErrors.UnknownError)
+    switch(_msg.status) {
+      case 403: throw new Errors.NotBloggerError
+      default: throw new Errors.BallotError
+    }
+  }
 }

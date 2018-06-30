@@ -1,21 +1,16 @@
 import url from './url'
+import Errors from './Errors'
+import Ballot from './Ballot'
 import encodeSearchParams from '../encodeSearchParams'
+import assert from '../assert'
 
 
-export namespace Errors {
-  export class BallotError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Unable to find ballot')
-    }
-  }
-  
-}
-
-interface BallotFindArg {
+export interface BallotFindArg {
   id?: number,
   title?: string,
   text?: string,
   owner?: number,
+  omit?: string,
   limit?: number,
   skip?: number,
   sort?: string
@@ -29,23 +24,18 @@ interface BallotFindArg {
  * @param published Ballot's publishment state.
  * @param owner Ballot's owner's id.
  */
-export default async function(opt: BallotFindArg): Promise<string> {
-  let res: Response
-  return await fetch(url.FIND + '?' + encodeSearchParams(opt))
-  .then(_res => {
-    res = _res
-    return res.text()
+export default async function(opt: BallotFindArg): Promise<Ballot[]> {
+  let res: Response = await fetch(url.FIND + '?' + encodeSearchParams(opt), {
+    credentials: 'include'
   })
-  .then(msg => {
-    if(res.status == 200) return Promise.resolve(msg)
-    else {
-      try {
-        let _msg = JSON.parse(msg)
-        return Promise.reject(_msg)
-      } catch {
-        return Promise.reject(new Errors.BallotError)
-      }
-    }
-  })
-
+  let msg: string = await res.text()
+  assert(res.status == 200, new Errors.BallotError(msg))
+  let ballots: Ballot[]
+  try {
+    ballots = JSON.parse(msg)
+  } catch {
+    throw new Errors.BallotError(msg)
+  }
+  assert(ballots instanceof Array, new Errors.BallotError('Unable to find ballot'))
+  return ballots.map(ballot => new Ballot(ballot))
 }
