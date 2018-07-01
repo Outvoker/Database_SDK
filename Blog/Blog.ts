@@ -49,14 +49,22 @@ export default class Blog extends Model implements Blog {
    * @description Get hot blog list.
    * @param pageNum Page number.
    * @param pageSize Blogs per page.
+   * @param ascend Return result in ascending or descending order.
    */
-  static async getHotBlogs(pageNum: number, pageSize: number, ascend: boolean = false): Promise<[Blog[], number]> {
-    assert(pageNum && pageSize)
+  static async getHotBlogs(opt: { pageNum: number; pageSize: number; ascend?: boolean; search?: string }): Promise<[Blog[], number]> {
+    assert(opt.pageNum && opt.pageSize)
     return [await find({
       omit: 'text',
-      limit: pageSize,
-      skip: (pageNum - 1) * pageSize,
-      sort: 'updatedAt ' + (ascend ? 'ASC' : 'DESC')
+      limit: opt.pageSize,
+      skip: (opt.pageNum - 1) * opt.pageSize,
+      sort: 'updatedAt ' + (opt.ascend ? 'ASC' : 'DESC'),
+      ...(opt.search ? {
+        where: {
+          title: {
+            contains: opt.search
+          }
+        }
+      } : {})
     }), await count()]
   }
 

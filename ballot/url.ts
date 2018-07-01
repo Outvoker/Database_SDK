@@ -3,5 +3,5 @@ export default {
   UPDATE: '/ballot/update',
   DELETE: '/ballot/delete',
   FIND: '/ballot',
-  COUNT: '/blog/count'
+  COUNT: '/ballot/count'
 }

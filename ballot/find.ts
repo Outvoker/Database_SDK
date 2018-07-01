@@ -6,14 +6,15 @@ import assert from '../assert'
 
 
 export interface BallotFindArg {
-  id?: number,
-  title?: string,
-  text?: string,
-  owner?: number,
-  omit?: string,
-  limit?: number,
-  skip?: number,
+  id?: number
+  title?: string
+  text?: string
+  owner?: number
+  omit?: string
+  limit?: number
+  skip?: number
   sort?: string
+  where?: any
 }
 
 /**
@@ -25,6 +26,7 @@ export interface BallotFindArg {
  * @param owner Ballot's owner's id.
  */
 export default async function(opt: BallotFindArg): Promise<Ballot[]> {
+  opt.where = JSON.stringify(opt.where || {})
   let res: Response = await fetch(url.FIND + '?' + encodeSearchParams(opt), {
     credentials: 'include'
   })

@@ -1,15 +1,7 @@
 import url from './url'
 import assert from '../assert'
+import Errors from './Errors'
 
-
-export namespace Errors {
-  export class OptionError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Unable to create option')
-    }
-  }
-  
-}
 
 /**
  * @description Create an option.
@@ -17,32 +9,17 @@ export namespace Errors {
  * @param ballot Option's ballot.
  * @param owner Option's owner's id.
  */
-export default async function(title: string, ballot: number, owner: number): Promise<string> {
-  assert(owner > 0 && ballot > 0)
-  let res: Response
-  return await fetch(url.CREATE, {
+export default async function(opt: { title: string; ballot: number; owner: number }): Promise<string> {
+  assert(opt.owner > 0 && opt.ballot > 0)
+  let res: Response = await fetch(url.CREATE, {
     method: 'POST',
     credentials: 'include',
-    body: JSON.stringify({
-      title,
-      ballot,
-      owner
-    })
+    body: JSON.stringify(opt)
   })
-  .then(_res => {
-    res = _res
-    return res.text()
-  })
-  .then(msg => {
-    if(res.status == 200) return Promise.resolve(msg)
-    else {
-      try {
-        let _msg = JSON.parse(msg)
-        return Promise.reject(_msg)
-      } catch {
-        return Promise.reject(new Errors.OptionError)
-      }
-    }
-  })
-
+  let msg: string = await res.text()
+  switch(res.status) {
+    case 200: return msg
+    case 403: throw new Errors.NotBloggerError 
+    default: throw new Errors.OptionError
+  }
 }

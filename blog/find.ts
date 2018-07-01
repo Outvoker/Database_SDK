@@ -14,6 +14,7 @@ export interface BlogFindArg {
   limit?: number
   skip?: number
   sort?: string
+  where?: any
 }
 
 /**
@@ -27,6 +28,7 @@ export interface BlogFindArg {
  * @param sort Blog's sort.
  */
 export default async function(opt: BlogFindArg): Promise<Blog[]> {
+  if(opt.where) opt.where = JSON.stringify(opt.where || {})
   let res: Response = await fetch(url.FIND + '?' + encodeSearchParams(opt), {
     credentials: 'include'
   })

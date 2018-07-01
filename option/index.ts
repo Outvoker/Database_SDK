@@ -1,10 +1,4 @@
-import url from './url'
-import create from './create'
-import find from './find'
+import Option from './Option'
 
 
-export default {
-  url,
-  create,
-  find
-}
+export default Option

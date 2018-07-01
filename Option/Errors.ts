@@ -1,9 +1,9 @@
 namespace Errors {
-  export class BallotError extends Error {
+  export class OptionError extends Error {
     constructor(msg?: string) {
       super()
       this.stack = (new Error).stack
-      this.message = msg || 'Unable to create ballot'
+      this.message = msg || 'Unable to create option'
     }
   }
 
@@ -12,14 +12,6 @@ namespace Errors {
       super()
       this.stack = (new Error).stack
       this.message = msg || 'You are not a blogger'
-    }
-  }
-
-  export class BallotNotFoundError extends Error {
-    constructor(msg?: string) {
-      super()
-      this.stack = (new Error).stack
-      this.message = msg || 'Ballot not found'
     }
   }
 }

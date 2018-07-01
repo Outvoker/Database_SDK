@@ -9,7 +9,7 @@ import Errors from './Errors'
  */
 export default async function(id: number): Promise<string> {
   assert(id > 0)
-  let res: Response = await fetch(url.CREATE, {
+  let res: Response = await fetch(url.DELETE, {
     method: 'POST',
     credentials: 'include',
     body: JSON.stringify({
@@ -19,5 +19,4 @@ export default async function(id: number): Promise<string> {
   let msg: string = await res.text()
   if(res.status == 200) return msg
   else throw new Errors.BallotError('Unable to delete ballot')
-
 }

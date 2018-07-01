@@ -10,6 +10,7 @@ import state from './state'
 import get from './get'
 import Blog from '../Blog'
 import generateAvatar from '../../generateAvatar'
+import Ballot from '../Ballot';
 
 
 export default interface User extends Model {
@@ -93,15 +94,32 @@ export default class User extends Model implements User {
   /**
    * @description Get blogs written by this user.
    */
-  async getBlogs(pageNum: number, pageSize: number, ascend: boolean = false): Promise<[Blog[], number]> {
-    assert(pageSize && pageNum)
-    return [await Blog.find({
-      owner: this.id,
-      omit: 'text',
-      sort: 'createdAt ' + (ascend ? 'ASC' : 'DESC'),
-      limit: pageSize,
-      skip: (pageNum - 1) * pageSize
-    }), await Blog.count(this.id)]
+  async getBlogs(opt: { pageNum: number; pageSize: number; ascend?: boolean }): Promise<[Blog[], number]> {
+    assert(opt.pageSize && opt.pageNum)
+    return await Promise.all([
+      Blog.find({
+        owner: this.id,
+        omit: 'text',
+        sort: 'createdAt ' + (opt.ascend ? 'ASC' : 'DESC'),
+        limit: opt.pageSize,
+        skip: (opt.pageNum - 1) * opt.pageSize
+      }),
+      Blog.count(this.id)
+    ])
+  }
+
+  async getBallots(opt: { pageNum: number; pageSize: number; ascend?: boolean }): Promise<[Ballot[], number]> {
+    assert(opt.pageSize && opt.pageNum)
+    return await Promise.all([
+      Ballot.find({
+        owner: this.id,
+        omit: 'text',
+        sort: 'createdAt ' + (opt.ascend ? 'ASC' : 'DESC'),
+        limit: opt.pageSize,
+        skip: (opt.pageNum - 1) * opt.pageSize
+      }),
+      Ballot.count(this.id)
+    ])
   }
 
   async createBlog(opt: { title: string; text: string }): Promise<void> {

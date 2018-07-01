@@ -1,24 +1,19 @@
 import url from './url'
 import encodeSearchParams from '../encodeSearchParams'
+import Option from './Option'
+import Errors from './Errors'
+import assert from '../assert'
 
 
-export namespace Errors {
-  export class OptionError extends Error {
-    constructor(msg?: string) {
-      super(msg || 'Unable to find option')
-    }
-  }
-  
-}
-
-interface OptionFindArg {
-  id?: number,
-  ballot?: number,
-  title?: string,
-  owner?: number,
-  limit?: number,
-  skip?: number,
+export interface OptionFindArg {
+  id?: number
+  ballot?: number
+  title?: string
+  owner?: number
+  limit?: number
+  skip?: number
   sort?: string
+  where?: any
 }
 /**
  * @description Find a option.
@@ -30,23 +25,17 @@ interface OptionFindArg {
  * @param skip Option's skip.
  * @param sort Option's sort.
  */
-export default async function(opt: OptionFindArg): Promise<string> {
-  let res: Response
-  return await fetch(url.FIND + '?' + encodeSearchParams(opt))
-  .then(_res => {
-    res = _res
-    return res.text()
-  })
-  .then(msg => {
-    if(res.status == 200) return Promise.resolve(msg)
-    else {
-      try {
-        let _msg = JSON.parse(msg)
-        return Promise.reject(_msg)
-      } catch {
-        return Promise.reject(new Errors.OptionError)
-      }
-    }
-  })
-
+export default async function(opt: OptionFindArg): Promise<Option[]> {
+  if(opt.where) opt.where = JSON.stringify(opt.where || {})
+  let res: Response = await fetch(url.FIND + '?' + encodeSearchParams(opt))
+  let msg: string = await res.text()
+  assert(res.status == 200, new Errors.OptionError(msg))
+  let options: Option[]
+  try {
+    options = JSON.parse(msg)
+  } catch {
+    throw new Errors.OptionError(msg)
+  }
+  assert(options instanceof Array, new Errors.OptionError('Unable to find option'))
+  return options.map(option => new Option(option))
 }

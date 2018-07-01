@@ -20,5 +20,4 @@ export default async function(opt: { id: number, title?: string, text?: string, 
   let msg: string = await res.text()
   assert(res.status == 200, new Errors.BallotError(msg))
   return msg
-
 }

@@ -21,18 +21,9 @@ export default async function(opt: { title: string; text: string; published: boo
     body: JSON.stringify(opt)
   })
   let msg: string = await res.text()
-  if(res.status == 200) return
-  else {
-    let _msg: Msg
-    try {
-      _msg = JSON.parse(msg)
-    } catch {
-      throw new Errors.BlogError(msg)
-    }
-    assert(_msg.status, new BaseErrors.UnknownError)
-    switch(_msg.status) {
-      case 403: throw new Errors.NotBloggerError
-      default: throw new Errors.BlogError
-    }
+  switch(res.status) {
+    case 200: return
+    case 403: throw new Errors.NotBloggerError
+    default: throw new Errors.BlogError(msg)
   }
 }
